@@ -1,9 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties":{
-   
-        "rbac":{"$ref": "#/definitions/rbacFeature"}
-    },
+    "$ref": "#/definitions/AppManifest",
     "definitions": {
         "AppManifest": {
             "type": "object",
