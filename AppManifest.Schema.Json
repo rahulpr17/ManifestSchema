@@ -1,0 +1,718 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/AppManifest",
+    "definitions": {
+        "AppManifest": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "represent an app manifest",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "App Id",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": false,
+                    "createDto": false
+                },
+                "name": {
+                    "type": "string",
+                    "description": "App Name",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "description": {
+                    "type": "string",
+                    "description": "App Description",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "deploymentType": {
+                    "type": "string",
+                    "description": "Deployment Type",
+                    "enum": [
+                        "kubernetes",
+                        "azureFunctions"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "repositorySettings": {
+                    "$ref": "#/definitions/RepositorySettings",
+                    "description": "settings to connect to GIT app repository",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "executionModes": {
+                    "type": "array",
+                    "description": "Settings per moode(s) the app can run",
+                    "items": {
+                        "$ref": "#/definitions/ExecutionModeSetting"
+                    },
+                    "minItems": 1,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "description",
+                "deploymentType",
+                "repositorySettings",
+                "executionModes"
+            ],
+            "title": "AppManifest"
+        },
+        "ExecutionModeSetting": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Represent an execution mode for an App",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "mode Id. Validation Rules: must be unique in the collection",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": false
+                },
+                "storeIcon": {
+                    "type": "string",
+                    "description": "Icon to be use in the app store. Validation Rules: must be an encoded file with a max size set by the UI team",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "designerIcon": {
+                    "type": "string",
+                    "description": "Name of the icon to be use in the workflow designer. Validation Rules: Must be a valid icon part in the parts service by part type = workflowStep and name",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "mode name to be use in the library UI. Validation Rules: must be unique in the collection",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "description": {
+                    "type": "string",
+                    "description": "mode description to be use in the library UI",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "searchTags": {
+                    "type": "array",
+                    "description": "search tags to be use in the library UI",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "stepType": {
+                    "type": "string",
+                    "description": "step type the mode can execute",
+                    "enum": [
+                        "initiate",
+                        "process"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "triggerType": {
+                    "type": "string",
+                    "description": "trigger type for the app. Validation Rules: If step type is initiate this must be none, If step type is process must be async or sync",
+                    "enum": [
+                        "none",
+                        "async",
+                        "sync"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "routingSettings": {
+                    "$ref": "#/definitions/RoutingSettings",
+                    "description": "routing settings",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "workflowLevelSetting": {
+                    "description": "Represent a workflow level configuration that can be shared between apps",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "type of the configuration, this is used to shared a model between apps"
+                        },
+                        "configurationSettings": {
+                            "$ref": "#/definitions/ConfigurationSettings",
+                            "description": "Represents the settings to gather the app configuration"
+                        }
+                    },
+                    "required": [
+                        "type"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "stepConfigurationSettings": {
+                    "$ref": "#/definitions/ConfigurationSettings",
+                    "description": "Represents the settings to gather the app configuration for a step",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "inputMappingSettings": {
+                    "$ref": "#/definitions/InputMappingSettings",
+                    "description": "Represent the input mapping for the app",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "outputMappingSettings": {
+                    "$ref": "#/definitions/OutputMappingSettings",
+                    "description": "Represent the output mapping for the app",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "rbacFeatures": {
+                    "type": "array",
+                    "description": "list of rbac features to add to the customer when using this app mode",
+                    "items": {
+                        "$ref": "#/definitions/rbacFeature"
+                    },
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "externalConnectorsSettings": {
+                    "type": "array",
+                    "description": "list of connectors required by the app",
+                    "items": {
+                        "$ref": "#/definitions/connectorsetting"
+                    },
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "customUiSettings": {
+                    "type": "object",
+                    "description": "Custom UI Settings",
+                    "items": {
+                        "$ref": "#/definitions/customUiSetting"
+                    },
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "id",
+                "storeIcon",
+                "designerIcon",
+                "name",
+                "description",
+                "searchTags",
+                "stepType",
+                "triggerType",
+                "routingSettings"
+            ],
+            "title": "ModeSetting"
+        },
+        "customUiSetting": {
+            "type": "object",
+            "description": "Represent configuration for a custom UI used by the app",
+            "additionalProperties": false,
+            "properties": {
+                "packageId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Package Id",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "portalMenuPath": {
+                    "type": "string",
+                    "description": "Path to create a menu in the customer portal to execute the UI",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "packageRepositoryPath": {
+                    "type": "string",
+                    "description": "Path to the package file in the repository. Validation Rules: Must validate that file exist in repository",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "packageId",
+                "portalMenuPath",
+                "packageRepositoryPath"
+            ]
+        },
+        "connectorsetting": {
+            "type": "object",
+            "description": "Represent a connector setting",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "type of connector. Validation Rules: Must be a valid type in the connector service, must call connector service to ensure is valid",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "appConnectorName": {
+                    "type": "string",
+                    "description": "Name to map the connector to an internal property",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true,
+                    "uniqueItems": true
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Label to use in the UI configuration",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "tooltip": {
+                    "type": "string",
+                    "description": "Tooltip to use in the UI",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "type",
+                "appConnectorName",
+                "label",
+                "tooltip"
+            ],
+            "title": "Connector"
+        },
+        "rbacFeature": {
+            "type": "object",
+            "description": "Represent a feature in the RBAC service",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Id Feature",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "owner": {
+                    "type": "string",
+                    "description": "Owner of the feature",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the Feature",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "processDomain": {
+                    "type": "string",
+                    "description": "Domain grouping for the UI",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "id",
+                "description",
+                "owner",
+                "processDomain"
+            ],
+            "title": "RbacFeature"
+        },
+        "ConfigurationSettings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "set how to request configuration from the user",
+                    "enum": [
+                        "default",
+                        "custom"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "customConfigurationSettings": {
+                    "$ref": "#/definitions/CustomConfigurationSettings",
+                    "description": "Settings when using Custom as the type of configuration. Validation Rules: Must be valid if type is custom",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "defaultConfigurationSettings": {
+                    "$ref": "#/definitions/DefaultConfigurationSettings",
+                    "description": "Settings when using default as the type of configuration. Validation Rules: Must be valid if type is default",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "title": "ConfigurationSettings"
+        },
+        "DefaultConfigurationSettings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "formAsJson": {
+                    "type": "string",
+                    "description": "Represent the json to be use by the UI to create the configuration form at run time. Validation Rules: Must be a valid json"
+                },
+                "readByIdDto": true,
+                "readDto": true,
+                "updateDto:": true,
+                "createDto": true
+            },
+            "required": [
+                "formAsJson"
+            ],
+            "title": "defaultConfigurationSettings"
+        },
+        "CustomConfigurationSettings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "packageDirectoryPath": {
+                    "type": "string",
+                    "description": "Path in the repository to retrieve the UI package to display for Custom configuration. Validation Rules: File must exist in the repository"
+                },
+                "readByIdDto": true,
+                "readDto": false,
+                "updateDto:": true,
+                "createDto": true
+            },
+            "required": [
+                "packageDirectoryPath"
+            ],
+            "title": "customConfigurationUisettings"
+        },
+        "InputMappingSettings": {
+            "type": "object",
+            "description": "Input Mapping Settings",
+            "additionalProperties": false,
+            "properties": {
+                "objectsToMap": {
+                    "type": "array",
+                    "description": "Objects to map, it can be entities or fields",
+                    "items": {
+                        "$ref": "#/definitions/ObjectsToMap"
+                    }
+                },
+                "readByIdDto": true,
+                "readDto": true,
+                "updateDto:": true,
+                "createDto": true
+            },
+            "required": [],
+            "title": "InputMappingSettings"
+        },
+        "OutputMappingSettings": {
+            "type": "object",
+            "description": "Output Mapping Settings",
+            "additionalProperties": false,
+            "properties": {
+                "objectsToMap": {
+                    "type": "array",
+                    "description": "Objects to map, it can be entities or fields",
+                    "items": {
+                        "$ref": "#/definitions/ObjectsToMap"
+                    }
+                },
+                "readByIdDto": true,
+                "readDto": true,
+                "updateDto:": true,
+                "createDto": true
+            },
+            "required": [],
+            "title": "OutputMappingSettings"
+        },
+        "ObjectsToMap": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "description of the mapping object",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Label to use in the UI for this mapping object",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "objectInternalName": {
+                    "type": "string",
+                    "description": "Name of the internal object to map",
+                    "uniqueItems": true,
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Type of object to map",
+                    "enum": [
+                        "entity",
+                        "dataField"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "dataFieldTargetType": {
+                    "type": "string",
+                    "description": "type of object the field being map should have, for example target a field of type String in data. Validation Rules: Must be set if type is data field",
+                    "enum": [
+                        "string",
+                        "integer",
+                        "date-time",
+                        "boolean",
+                        "decimal"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "entityTargetType": {
+                    "type": "string",
+                    "description": "type of object the entity being map should have, for example target a Entity of type Default. Validation Rules: Must be set if type is entity",
+                    "enum": [
+                        "default"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "objectInternalName",
+                "type",
+                "label",
+                "description"
+            ],
+            "title": "ObjectsToMap"
+        },
+        "RoutingSettings": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Represent settings to route work after processed by the app",
+            "properties": {
+                "allowCustomRoutes": {
+                    "type": "string",
+                    "format": "boolean",
+                    "description": "Allow user to add custom routes to the app output route",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "outputRoutes": {
+                    "type": "array",
+                    "description": "List of routes the work item can follow after execution. Validation Rules: Must have at least one route if does not allow custom routes",
+                    "items": {
+                        "$ref": "#/definitions/outputRoutes"
+                    },
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [],
+            "title": "RoutingSettings"
+        },
+        "outputRoutes": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Represent an output route",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Route Type",
+                    "enum": [
+                        "named",
+                        "default"
+                    ],
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Route Name",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Route Description",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "required": {
+                    "type": "boolean",
+                    "description": "Flag to determine if route is required",
+                    "readByIdDto": true,
+                    "readDto": true,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "type",
+                "name",
+                "description",
+                "required"
+            ],
+            "title": "RequiredRoute"
+        },
+        "RepositorySettings": {
+            "type": "object",
+            "description": "Represent settings to connect to a GIT repository to pull scripts to deploy the app and dependencies. Validation Rules: Must validate connection to repository",
+            "additionalProperties": false,
+            "properties": {
+                "repositoryName": {
+                    "type": "string",
+                    "description": "Repository Name",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "deploymentScriptsDirectoryPath": {
+                    "type": "string",
+                    "description": "Folder path within the repository to get the deployment script file",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "deploymentScriptFileName": {
+                    "type": "string",
+                    "description": "Name of the file to use to deploy the app. Validation Rules: Must validate exist",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "infrastructureScriptsDirectoryPath": {
+                    "type": "string",
+                    "description": "Folder path within the repository to get the deployment script file(s) for infrastructure required by the app",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                },
+                "infrastructureScriptFilePath": {
+                    "type": "string",
+                    "description": "Name of the file to use to deploy the app infrastructure dependencies. Validation Rules: Must validate exist",
+                    "readByIdDto": true,
+                    "readDto": false,
+                    "updateDto:": true,
+                    "createDto": true
+                }
+            },
+            "required": [
+                "repositoryName",
+                "deploymentScriptsDirectoryPath",
+                "deploymentScriptFileName"
+            ],
+            "title": "RepositorySettings"
+        }
+    }
+}
